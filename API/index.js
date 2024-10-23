@@ -1,24 +1,28 @@
 import express from "express";
 import cookieParser from "cookie-parser";
-import mongoose from "mongoose";
 import cors from "cors"; // for cross-origin requests
 import dotenv from "dotenv"; // for environment variables
-import bcrypt from "bcrypt"; // for password hashing
+import mongoose from "mongoose";
+import "./config/db.js"; // connect to MongoDB
+import connectDB from "./config/db.js";
 
 const app = express();
-dotenv.config();
+dotenv.config(); // for environment variables
 
 // Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors());
 
-//connect to mongodb
-mongoose
-  .connect(process.env.MONGO_URI)
-  .then(() => console.log("Connected to MongoDB"))
-  .catch((error) => console.error("Error connecting to MongoDB:", error)); 
+// Mongo Connection
+connectDB();
 
+// Route end point
+app.get("/", (req, res) => { 
+  res.send("API is running...");
+});
+
+// listen to the server
 app.listen(process.env.PORT, () => {
   console.log(`Server is running on port ${process.env.PORT}`);
-})  
+});
