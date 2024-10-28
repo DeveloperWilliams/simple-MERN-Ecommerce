@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import sendVerificationEmail from "../utils/nodemailer.js";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 // Create a new user
 export const registerUser = async (req, res) => {
@@ -34,6 +35,134 @@ export const registerUser = async (req, res) => {
     res.status(201).json({ message: "User created successfully" });
   } catch (error) {
     console.error("Error registering user:", error); // Log the error for debugging
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Login the user
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    if (!user.isVerified) {
+      return res.status(400).json({ message: "Email not verified" });
+    }
+
+    // Create a JWT token with user ID only (or add limited data if needed)
+    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+      expiresIn: process.env.JWT_EXPIRATION || "1h",
+    });
+
+    // Send the token in an HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      sameSite: "Strict",
+    });
+
+    res.status(200).json({
+      message: "User logged in successfully",
+      user: {
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Logout the user
+export const logOutUser = (req, res) => {
+  res
+    .clearCookie("token", {
+      httpOnly: true,
+      sameSite: "Strict",
+    })
+    .status(200)
+    .json({ message: "User logged out successfully" });
+};
+
+// Verify the user's email
+export const verifyEmail = async (req, res) => {
+  const verificationToken = req.params.verificationToken;
+
+  try {
+    const user = await User.findOne({ verificationToken });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+    user.isVerified = true;
+    user.verificationToken = undefined;
+    await user.save();
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// Resend verification email
+
+export const resendVerificationEmail = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    const verificationToken = new User().generateVerificationToken();
+    user.verificationToken = verificationToken;
+    await user.save();
+    await sendVerificationEmail(user.email, verificationToken);
+    res.status(200).json({ message: "Verification email sent" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// forgot password
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    const resetToken = new User().generateVerificationToken();
+    user.verificationToken = resetToken;
+    await user.save();
+    await sendVerificationEmail(user.email, resetToken);
+    res.status(200).json({ message: "Reset password email sent" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+
+// New password
+export const resetPassword = async (req, res) => {
+  const verificationToken = req.params.verificationToken;
+  const { password } = req.body;
+  try {
+    const user = await User.findOne({ verificationToken });
+    if (!user) {
+      return res.status(400).json({ message: "Invalid token" });
+    }
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
+    user.verificationToken = undefined;
+    await user.save();
+    res.status(200).json({ message: "Password reset successfully" });
+  } catch (error) {
     res.status(500).json({ message: "Server Error" });
   }
 };
