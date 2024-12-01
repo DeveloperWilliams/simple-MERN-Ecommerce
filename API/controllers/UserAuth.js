@@ -58,8 +58,8 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Email not verified" });
     }
 
-    // Create a JWT token with user ID only (or add limited data if needed)
-    const token = jwt.sign({ id: user._id }, process.env.SECRET_KEY, {
+    // Create a JWT token with user ID only
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRATION || "1h",
     });
 
@@ -77,7 +77,7 @@ export const loginUser = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({ message: error.message || "Server Error" });
   }
 };
 
@@ -166,3 +166,42 @@ export const resetPassword = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+
+//make user admin
+export const makeUserAdmin = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email }); // Corrected line
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    user.role = "admin";
+    await user.save();
+    res.status(200).json({ message: "User is now an admin" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+
+//make user super admin user must be admin
+export const makeUserSuperAdmin = async (req, res) => {
+  const { email } = req.body;
+  try {
+    const user = await User.findOne({ email }); // Corrected line for querying
+    if (!user) {
+      return res.status(400).json({ message: "User does not exist" });
+    }
+    if (user.role !== "admin") { // Corrected condition for role check
+      return res.status(400).json({ message: "User is not an admin" });
+    }
+    
+    user.role = "superAdmin";
+    await user.save();
+    res.status(200).json({ message: "User is now a super admin" });
+  } catch (error) {
+    res.status(500).json({ message: "Server Error", error });
+  }
+};
+  
+//  
