@@ -8,7 +8,8 @@ import {
   resetPassword,
   verifyEmail,
   makeUserAdmin,
-  makeUserSuperAdmin
+  makeUserSuperAdmin,
+  googleLogin,
 } from "../controllers/UserAuth.js";
 import AuthToken from "../middleware/Auth.js";
 import { isAdmin, isSuperAdmin } from "../middleware/Auth.js";
@@ -24,6 +25,7 @@ router.post("/reset-password/:verificationToken", resetPassword);
 router.post("/logout", logOutUser);
 router.post("/make-admin", AuthToken, isAdmin, isSuperAdmin, makeUserAdmin);
 router.post("/make-super-admin", AuthToken, isAdmin, isSuperAdmin, makeUserSuperAdmin);
+router.post("/google-login", googleLogin); // Google login route
 
-
+ 
 export default router;

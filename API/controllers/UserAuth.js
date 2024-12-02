@@ -2,6 +2,69 @@ import bcrypt from "bcrypt";
 import sendVerificationEmail from "../utils/nodemailer.js";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import { OAuth2Client } from "google-auth-library";
+
+// Google login
+export const googleLogin = async (req, res) => {
+  const client = new OAuth2Client(process.env.OAuth2Client);
+
+  // Helper function to verify Google token
+  async function verifyGoogleToken(idToken) {
+    const ticket = await client.verifyIdToken({
+      idToken,
+      audience: process.env.OAuth2Client,
+    });
+    const payload = ticket.getPayload();
+    return payload;
+  }
+
+  try {
+    const { token } = req.body; // Get the token from request body
+    const payload = await verifyGoogleToken(token); // Await the payload
+
+    const email = payload.email;
+    const checkUser = await User.findOne({ email }); // Check if user exists
+
+    if (checkUser) {
+      // User found, generate JWT token
+      const jwtToken = jwt.sign({ id: checkUser._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRATION || "1h",
+      });
+
+      return res.status(200).json({
+        message: "Login Successful",
+        name: checkUser.name,
+        token: jwtToken,
+      });
+    } else {
+      // User doesn't exist, create a new user instance
+      const user = new User({
+        name: payload.name,
+        email,
+        password: "12345678", // Set a default password, you can modify later
+        isVerified: true,
+        verificationToken: undefined, // No verification token needed for Google login
+      });
+
+      // Save the new user to the database
+      await user.save();
+
+      const jwtToken = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: process.env.JWT_EXPIRATION || "1h",
+      });
+
+      return res.status(201).json({
+        message: "User created and logged in successfully",
+        name: user.name,
+        token: jwtToken,
+      });
+    }
+  } catch (error) {
+    console.error('Google login error:', error); // Log the error for debugging purposes
+    return res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 
 // Create a new user
 export const registerUser = async (req, res) => {
@@ -167,7 +230,6 @@ export const resetPassword = async (req, res) => {
   }
 };
 
-
 //make user admin
 export const makeUserAdmin = async (req, res) => {
   const { email } = req.body;
@@ -192,10 +254,11 @@ export const makeUserSuperAdmin = async (req, res) => {
     if (!user) {
       return res.status(400).json({ message: "User does not exist" });
     }
-    if (user.role !== "admin") { // Corrected condition for role check
+    if (user.role !== "admin") {
+      // Corrected condition for role check
       return res.status(400).json({ message: "User is not an admin" });
     }
-    
+
     user.role = "superAdmin";
     await user.save();
     res.status(200).json({ message: "User is now a super admin" });
@@ -203,5 +266,5 @@ export const makeUserSuperAdmin = async (req, res) => {
     res.status(500).json({ message: "Server Error", error });
   }
 };
-  
-//  
+
+//
