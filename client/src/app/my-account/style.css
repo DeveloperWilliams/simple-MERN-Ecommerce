@@ -1,148 +1,148 @@
 .my-account {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    height: 100vh;
-    background-color: #f5f5f5;
-    font-family: "Josefin Sans", sans-serif;
-  }
-  
-  .my-account .top h1 {
-    margin-bottom: 20px;
-    font-size: 36px;
-    color: #333;
-  }
-  
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  background-color: #f5f5f5;
+  font-family: "Josefin Sans", sans-serif;
+}
+
+.my-account .top h1 {
+  margin-bottom: 20px;
+  font-size: 36px;
+  color: #333;
+}
+
+.my-account .lower {
+  display: flex;
+  flex-direction: column;
+  padding: 30px;
+  gap: 20px;
+  width: 500px;
+  align-items: center;
+  background: #ffffff;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.my-account .lower form {
+  display: none; /* Hide forms initially */
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  opacity: 0;
+  transition: opacity 0.3s ease; /* Smooth fade-in effect */
+}
+
+.my-account .lower form.active {
+  display: flex; /* Show the active form */
+  opacity: 1;
+}
+
+.my-account .lower form label {
+  font-size: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.my-account .lower form input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+  font-family: "Josefin Sans", sans-serif;
+  width: 100%;
+}
+
+.my-account .lower form button {
+  padding: 10px 15px;
+  background-color: #010101;
+  font-family: "josefin sans";
+  color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  position: relative;
+  overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.my-account .lower form button:hover {
+  background-color: #292929;
+}
+
+.my-account .lower form .google-login-button {
+  font-family: "josifin sans";
+}
+
+.my-account .lower .toggle-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.my-account .lower .toggle-buttons button {
+  padding: 10px 15px;
+  background-color: #e0e0e0;
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+  width: auto;
+  position: relative;
+  overflow: hidden;
+}
+
+.my-account .lower .toggle-buttons button.active {
+  background-color: #007bff;
+  color: #ffffff;
+  font-family: "josefin sans", sans-serif;
+}
+
+.my-account .lower .toggle-buttons button .button-inner {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background-color: #ffbf00;
+  opacity: 0.3;
+  transition: left 0.3s ease;
+}
+
+.my-account .lower .toggle-buttons button.active .button-inner {
+  left: 0;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 600px) {
   .my-account .lower {
-    display: flex;
-    flex-direction: column;
-    padding: 30px;
-    gap: 20px;
-    width: 500px;
-    align-items: center;
-    background: #ffffff;
-    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
+    width: 90%;
+    padding: 20px;
   }
-  
-  .my-account .lower form {
-    display: none; /* Hide forms initially */
-    flex-direction: column;
-    gap: 20px;
-    width: 100%;
-    opacity: 0;
-    transition: opacity 0.3s ease; /* Smooth fade-in effect */
-  }
-  
-  .my-account .lower form.active {
-    display: flex; /* Show the active form */
-    opacity: 1;
-  }
-  
-  .my-account .lower form label {
-    font-size: 15px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .my-account .lower form input {
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    font-family: "Josefin Sans", sans-serif;
-    width: 100%;
-  }
-  
-  .my-account .lower form button {
-    padding: 10px 15px;
-    background-color: #010101;
-    font-family: "josefin sans";
-    color: #ffffff;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    position: relative;
-    overflow: hidden;
-    transition: background-color 0.3s ease;
-  }
-  
-  .my-account .lower form button:hover {
-    background-color: #292929;
-  }
-  
-  .my-account .lower form .google-login-button {
-    font-family: "josifin sans";
-  }
-  
+
   .my-account .lower .toggle-buttons {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
+    flex-direction: row;
     width: 100%;
   }
-  
+
   .my-account .lower .toggle-buttons button {
-    padding: 10px 15px;
-    background-color: #e0e0e0;
-    color: #333;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+    flex: 1;
+    padding: 15px;
     font-size: 14px;
-    transition: background-color 0.3s ease;
-    width: auto;
-    position: relative;
-    overflow: hidden;
   }
-  
-  .my-account .lower .toggle-buttons button.active {
-    background-color: #007bff;
-    color: #ffffff;
-  }
-  
-  .my-account .lower .toggle-buttons button .button-inner {
-    position: absolute;
-    top: 0;
-    left: -100%;
+
+  .my-account .lower form {
     width: 100%;
-    height: 100%;
-    background-color: #0056b3;
-    opacity: 0.3;
-    transition: left 0.3s ease;
   }
-  
-  .my-account .lower .toggle-buttons button.active .button-inner {
-    left: 0;
+
+  .my-account .lower .google-login {
+    width: 100%;
   }
-  
-  /* Responsive Design */
-  @media screen and (max-width: 600px) {
-    .my-account .lower {
-      width: 90%;
-      padding: 20px;
-    }
-  
-    .my-account .lower .toggle-buttons {
-      flex-direction: row;
-      width: 100%;
-    }
-  
-    .my-account .lower .toggle-buttons button {
-      flex: 1;
-      padding: 15px;
-      font-size: 14px;
-    }
-  
-    .my-account .lower form {
-      width: 100%;
-    }
-  
-    .my-account .lower .google-login {
-      width: 100%;
-    }
-  }
-  
+}

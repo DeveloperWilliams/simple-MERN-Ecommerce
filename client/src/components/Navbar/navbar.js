@@ -120,7 +120,7 @@ const Navbar = () => {
                   }
                 />
               </div>
-              <Link href="/register">
+              <Link href="/my-account">
                 <p>Register</p>
               </Link>
             </form>

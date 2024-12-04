@@ -2,6 +2,8 @@ import { Josefin_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar/navbar";
 import { GoogleOAuthProvider } from "@react-oauth/google"; // Import the provider
+import LowerNav from "@/components/LowerNav/LowerNav";
+
 
 // Load the Josefin_Sans font
 const josefin = Josefin_Sans({
@@ -25,6 +27,7 @@ export default function RootLayout({ children }) {
         {/* Wrap the app with GoogleOAuthProvider */}
         <GoogleOAuthProvider clientId="1092739927548-pc8jp22bl0s59th8cpd09escigbhnobg.apps.googleusercontent.com">
           <Navbar />
+          <LowerNav />
           {children}
         </GoogleOAuthProvider>
       </body>

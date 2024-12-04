@@ -31,6 +31,8 @@ export default function MyAccount() {
           pauseOnHover: true,
           draggable: true,
         });
+        {/* Redirect to home page after successful login */}
+        window.location.href = "/";
       })
       .catch((err) => {
         toast.error("Google Login Failed", err, {
@@ -53,6 +55,28 @@ export default function MyAccount() {
       setIsLoginActive(false);
       setIsRegisterActive(true);
     }
+  };
+
+  // handle regular form login
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    axios
+      .post(`${API_URL}/auth/login`, { email, password })
+      .then((res) => {
+        localStorage.setItem("token", res.data.token);
+        localStorage.setItem("user", res.data.name);
+        setIsLoggedIn(true);
+      })
+      .catch((err) => {
+        toast.error("Invalid Credentials", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+        });
+      });
   };
 
   return (
@@ -80,15 +104,18 @@ export default function MyAccount() {
           </button>
         </div>
 
-        <form className={`login-form ${isLoginActive ? "active" : ""}`}>
+        <form
+          className={`login-form ${isLoginActive ? "active" : ""}`}
+          onSubmit={handleSubmit}
+        >
           <h2>Login</h2>
           <label>
             Email
-            <input type="email" placeholder="Email" />
+            <input type="email" placeholder="Email" required />
           </label>
           <label>
             Password
-            <input type="password" placeholder="Password" />
+            <input type="password" placeholder="Password" required />
           </label>
           <button type="submit">Login</button>
           <div className="google-login">
@@ -103,16 +130,16 @@ export default function MyAccount() {
         <form className={`register-form ${isRegisterActive ? "active" : ""}`}>
           <h2>Register</h2>
           <label>
+            Full Name
+            <input type="text" placeholder="Full Name" />
+          </label>
+          <label>
             Email
             <input type="email" placeholder="Email" />
           </label>
           <label>
-            Password
-            <input type="password" placeholder="Password" />
-          </label>
-          <label>
-            Confirm Password
-            <input type="password" placeholder="Confirm Password" />
+            Create Password
+            <input type="password" placeholder="New Password" />
           </label>
           <button type="submit">Register</button>
         </form>

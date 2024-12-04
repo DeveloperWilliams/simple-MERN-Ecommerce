@@ -1,0 +1,7 @@
+/API/.env
+/API/.env.local
+
+/API/node_modules
+/API/build
+
+/API/.next

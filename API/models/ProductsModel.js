@@ -5,16 +5,52 @@ const productSchema = mongoose.Schema({
     type: String,
     required: true,
   },
-  category: {
+  productUrl: {
     type: String,
+    required: true, 
+  },
+  category: {
+    type: [
+      "smartphones",
+      "laptops",
+      "gaming",
+      "televisions",
+      "accessories",
+      "others",
+    ],
+    required: true,
+  },
+  brand: {
+    type: String,
+    required: true,
+  },
+  oldPrice: {
+    type: Number,
     required: true,
   },
   price: {
     type: Number,
     required: true,
   },
-  trending: {
+  isTrending: {
     type: Boolean,
+    required: true,
+  },
+  isBestSeller: {
+    type: Boolean,
+    required: true,
+  },
+  isLatest: {
+    type: Boolean,
+    required: true,
+  },
+  
+  rating: {
+    type: Number,
+    required: true,
+  },
+  numReviews: {
+    type: Number,
     required: true,
   },
   description: {
@@ -33,4 +69,4 @@ const productSchema = mongoose.Schema({
 
 const Product = mongoose.model("Product", productSchema);
 
-export default Product; 
+export default Product;

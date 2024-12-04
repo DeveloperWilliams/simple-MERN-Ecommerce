@@ -1,0 +1,13 @@
+.product-category {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.product-category .header {
+  background-color: rgb(240, 240, 240);
+  width: 100%;
+  margin-top: 130px;
+  padding: 20px 80px;
+  border-top: 1px solid #adafaf;
+}

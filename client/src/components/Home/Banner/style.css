@@ -1,0 +1,35 @@
+/* Wrapper around the banner to prevent overflow and create the sliding effect */
+.banner-wrapper {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* The container that holds all banners */
+.banner {
+    display: flex;
+    transition: transform 0.5s ease; /* Smooth transition */
+}
+
+/* Each banner inside the container */
+.product-banner {
+    flex: 0 0 100%; /* Each banner will take 100% of the container width */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 390px;
+    padding: 10px 8px;
+}
+
+/* Banner image styling */
+.banner-image {
+    width: 100%; /* Ensure the image fills the container */
+    height: 390px;
+}
+
+/* Optional: Add a transition effect when scrolling */
+.banner-wrapper::after {
+    content: '';
+    display: block;
+    clear: both;
+}

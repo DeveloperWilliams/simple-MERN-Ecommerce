@@ -1,4 +1,4 @@
-import Product from "../models/Product.js";
+import Product from "../models/ProductsModel.js";
 import multer from "multer";
 import path from "path";
 
@@ -23,6 +23,17 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({ storage: storage, fileFilter: fileFilter });
 
+
+// Helper function to generate URL-friendly product names
+const generateProductUrl = (name) => {
+  return name
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-');
+};
+
 // Create a new product with image upload support
 export const createProduct = async (req, res) => {
   upload.array("imgUrls")(req, res, async (err) => {
@@ -30,29 +41,34 @@ export const createProduct = async (req, res) => {
       return res.status(400).json({ message: err.message });
     }
 
-    const { name, category, price, trending, description, countInStock } =
-      req.body;
+    const { name, category, price, trending, description, countInStock } = req.body;
 
     // Get the image paths
     const imgUrls = req.files.map((file) => file.path);
 
+    // Generate the product URL (slug)
+    const productUrl = generateProductUrl(name);
+
     try {
       const newProduct = new Product({
         name,
+        productUrl,  // Add the generated URL slug here
         category,
         price,
         trending,
         description,
         countInStock,
-        imgUrls,
+        imageUrls: imgUrls,
       });
+
       await newProduct.save();
       res.status(201).json({ message: "Product created successfully" });
     } catch (error) {
       res.status(500).json({ message: "Something went wrong" });
     }
   });
-};
+}
+
 
 // Update a product with image upload support
 export const updateProduct = async (req, res) => {
@@ -132,6 +148,22 @@ export const getProductById = async (req, res) => {
   }
 };
 
+//get single product by productUrl
+export const getProductByURL = async (req, res) => {
+  const productUrl = req.params.productUrl;
+  try {
+    const product = await Product.findOne({ productUrl: productUrl });
+    if (product) {
+      res.status(200).json(product);
+    } else {
+      res.status(404).json({ message: "Product not found" });
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};
+
+
 // Get trending products
 export const getTrendingProducts = async (req, res) => {
   try {
@@ -146,6 +178,9 @@ export const getTrendingProducts = async (req, res) => {
 export const getProductsByCategory = async (req, res) => {
   try {
     const products = await Product.find({ category: req.params.category });
+    if (products.length === 0) {
+      return res.status(404).json({ message: "No products found" });
+    }
     res.status(200).json(products);
   } catch (error) {
     res.status(500).json({ message: "Something went wrong" });

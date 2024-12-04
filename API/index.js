@@ -7,6 +7,7 @@ import connectDB from "./config/db.js";
 
 // Import routes
 import userRoutes from "./routes/UserRoutes.js"  
+import productRoutes from "./routes/ProductRoutes.js"; // Import the Product route
 
 // Initialize express
 const app = express();
@@ -27,10 +28,11 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api/auth", userRoutes);
+app.use("/api/products", productRoutes); // Use the Product routes
    
 
 // listen to the server
 app.listen(process.env.PORT, () => {
-  console.log(`Server is running on port ${process.env.PORT}`);
+  console.log(`Server is running on port ${process.env.PORT}`); // Server is running on port 8080
 });
  

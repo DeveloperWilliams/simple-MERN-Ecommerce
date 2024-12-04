@@ -9,6 +9,7 @@
   position: fixed;
   left: 0;
   right: 0;
+  z-index: 1000;
 }
 
 .navbar .logo {
@@ -66,7 +67,7 @@
 
 .icon {
   font-size: 20px;
-  color: #ffbf00;
+  color: #c79809;
 }
 
 .navbar div ul li p {
@@ -150,6 +151,11 @@
   width: 100%;
   outline: none;
   font-family: "josefin sans", sans-serif;
+}
+.dropdownForm input::placeholder{
+  font-family: "josefin sans", sans-serif;
+  font-weight: 100;
+  font-style: italic;
 }
 
 .dropdownForm button {
