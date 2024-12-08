@@ -18,6 +18,7 @@
     justify-content: center;
     align-items: center;
     height: 390px;
+    height: calc(100vh-(130px));
     padding: 10px 8px;
 }
 
@@ -25,6 +26,7 @@
 .banner-image {
     width: 100%; /* Ensure the image fills the container */
     height: 390px;
+    height: calc(100vh-(130px));
 }
 
 /* Optional: Add a transition effect when scrolling */
