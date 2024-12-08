@@ -8,6 +8,7 @@ import connectDB from "./config/db.js";
 // Import routes
 import userRoutes from "./routes/UserRoutes.js"  
 import productRoutes from "./routes/ProductRoutes.js"; // Import the Product route
+import homeRoute from "./routes/homeRoute.js"
 
 // Initialize express
 const app = express();
@@ -15,20 +16,19 @@ dotenv.config(); // for environment variables
 
 // Middleware 
 app.use(express.json());
-app.use(cookieParser());
+app.use(cookieParser()); //cookie parse
 app.use(cors());
 
 // Mongo Connection 
 connectDB();
 
 // Route end point 
-app.get("/", (req, res) => { 
-  res.send("API is running...");
-});
+
 
 // Routes
 app.use("/api/auth", userRoutes);
 app.use("/api/products", productRoutes); // Use the Product routes
+app.use("/", homeRoute)
    
 
 // listen to the server
