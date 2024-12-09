@@ -33,26 +33,29 @@ export default function Banner() {
   }, [isTransitioning, updateScrollPosition]);
 
   useEffect(() => {
-    if (scrollPosition === banners.length - 1) {
-      setTimeout(() => {
+    if (isTransitioning) {
+      const timeout = setTimeout(() => {
         setIsTransitioning(false); // Reset transition state after animation completes
       }, 500); // Timeout matches the transition duration
-    } else {
-      setIsTransitioning(false); // Reset transition after each banner transition
+      return () => clearTimeout(timeout); // Cleanup timeout on unmount
     }
-  }, [scrollPosition]);
+  }, [isTransitioning]);
 
   return (
     <div className="banner-wrapper">
       <div
-        className={`banner ${isTransitioning ? "transitioning" : ""}`}
+        className="banner"
         style={{
           transform: `translateX(-${scrollPosition * 100}%)`, // Move the banner leftwards based on scroll position
-          transition: isTransitioning ? "transform 0.5s ease" : "none", // Smooth transition
         }}
       >
         {banners.map((banner, index) => (
-          <div key={index} className="product-banner">
+          <div
+            key={index}
+            className={`product-banner ${
+              scrollPosition === index ? "visible" : ""
+            }`}
+          >
             <Link href={banner.href}>
               <img
                 src={banner.src}
